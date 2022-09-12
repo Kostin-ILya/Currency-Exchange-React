@@ -75,7 +75,6 @@ function App() {
         <button
           onClick={() => {
             setValue(0)
-
             setCurrency('')
           }}
         >
