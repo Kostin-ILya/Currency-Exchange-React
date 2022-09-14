@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 
 import './App.css'
 
-function App(props) {
+const currencyNames = ['USD', 'EUR', 'TRY']
+
+function App() {
   const api = 'https://www.cbr-xml-daily.ru/daily_json.js'
   const [value, setValue] = useState(0)
   const [convertedValue, setConvertedValue] = useState(0)
@@ -14,10 +16,10 @@ function App(props) {
   useEffect(() => {
     fetch(api)
       .then((data) => data.json())
-      .then((res) => {
-        setUSD(res.Valute.USD.Value)
-        setEUR(res.Valute.EUR.Value)
-        setTRY(res.Valute.TRY.Value / 10)
+      .then(({ Valute }) => {
+        setUSD(Valute.USD.Value)
+        setEUR(Valute.EUR.Value)
+        setTRY(Valute.TRY.Value / 10)
       })
   }, [])
 
@@ -25,8 +27,8 @@ function App(props) {
     convert(currency)
   })
 
-  const convert = (currency) => {
-    switch (currency) {
+  const convert = (cur) => {
+    switch (cur) {
       case 'USD':
         setConvertedValue(value / USD)
         break
@@ -59,15 +61,17 @@ function App(props) {
       </div>
 
       <div className="controls">
-        <button name="USD" onClick={onChangeCurrency}>
-          USD
-        </button>
-        <button name="EUR" onClick={onChangeCurrency}>
-          EUR
-        </button>
-        <button name="TRY" onClick={onChangeCurrency}>
-          TRY
-        </button>
+        {currencyNames.map((curName) => (
+          <button
+            key={curName}
+            name={curName}
+            className={curName === currency && 'active'}
+            onClick={onChangeCurrency}
+          >
+            {curName}
+          </button>
+        ))}
+
         <button
           onClick={() => {
             setValue(0)
@@ -81,10 +85,5 @@ function App(props) {
     </div>
   )
 }
-
-// 1) Начальное значение счетчика должно передаваться через props
-// 2) INC и DEC увеличивают и уменьшают счетчик соответственно на 1. Без ограничений, но можете добавить границу в -50/50. По достижению границы ничего не происходит
-// 3) RND изменяет счетчик в случайное значение от -50 до 50. Конструкцию можете прогуглить за 20 секунд :) Не зависит от предыдущего состояния
-// 4) RESET сбрасывает счетчик в 0 или в начальное значение из пропсов. Выберите один из вариантов
 
 export default App

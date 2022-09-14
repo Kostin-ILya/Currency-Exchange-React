@@ -58,3 +58,7 @@ body {
   background-color: #6b7a8f;
   color: white;
 }
+
+.controls .active {
+  background-color: #e9b600;
+}
